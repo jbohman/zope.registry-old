@@ -14,6 +14,7 @@
 """Basic components support
 """
 import types
+import six
 
 from zope.interface import Interface
 from zope.interface import implementedBy
@@ -82,8 +83,8 @@ class Components(object):
         lambda self, bases: self._setBases(bases),
         )
 
-    def registerUtility(self, component=None, provided=None, name=u'', info=u'',
-                        event=True, factory=None):
+    def registerUtility(self, component=None, provided=None, name=six.u(''), 
+                        info=six.u(''), event=True, factory=None):
         if factory:
             if component:
                 raise TypeError("Can't specify factory and component.")
@@ -117,7 +118,7 @@ class Components(object):
                                     factory)
                 ))
 
-    def unregisterUtility(self, component=None, provided=None, name=u'',
+    def unregisterUtility(self, component=None, provided=None, name=six.u(''),
                           factory=None):
         if factory:
             if component:
@@ -163,10 +164,10 @@ class Components(object):
              ) in self._utility_registrations.iteritems():
             yield UtilityRegistration(self, provided, name, *data)
 
-    def queryUtility(self, provided, name=u'', default=None):
+    def queryUtility(self, provided, name=six.u(''), default=None):
         return self.utilities.lookup((), provided, name, default)
 
-    def getUtility(self, provided, name=u''):
+    def getUtility(self, provided, name=six.u('')):
         utility = self.utilities.lookup((), provided, name)
         if utility is None:
             raise ComponentLookupError(provided, name)
@@ -179,8 +180,8 @@ class Components(object):
     def getAllUtilitiesRegisteredFor(self, interface):
         return self.utilities.subscriptions((), interface)
 
-    def registerAdapter(self, factory, required=None, provided=None, name=u'',
-                        info=u'', event=True):
+    def registerAdapter(self, factory, required=None, provided=None, 
+                        name=six.u(''), info=six.u(''), event=True):
         if provided is None:
             provided = _getAdapterProvided(factory)
         required = _getAdapterRequired(factory, required)
@@ -196,7 +197,7 @@ class Components(object):
 
 
     def unregisterAdapter(self, factory=None,
-                          required=None, provided=None, name=u'',
+                          required=None, provided=None, name=six.u(''),
                           ):
         if provided is None:
             if factory is None:
@@ -228,20 +229,21 @@ class Components(object):
             yield AdapterRegistration(self, required, provided, name,
                                       component, info)
 
-    def queryAdapter(self, object, interface, name=u'', default=None):
+    def queryAdapter(self, object, interface, name=six.u(''), default=None):
         return self.adapters.queryAdapter(object, interface, name, default)
 
-    def getAdapter(self, object, interface, name=u''):
+    def getAdapter(self, object, interface, name=six.u('')):
         adapter = self.adapters.queryAdapter(object, interface, name)
         if adapter is None:
             raise ComponentLookupError(object, interface, name)
         return adapter
 
-    def queryMultiAdapter(self, objects, interface, name=u'', default=None):
+    def queryMultiAdapter(self, objects, interface, name=six.u(''), 
+                          default=None):
         return self.adapters.queryMultiAdapter(
             objects, interface, name, default)
 
-    def getMultiAdapter(self, objects, interface, name=u''):
+    def getMultiAdapter(self, objects, interface, name=six.u('')):
         adapter = self.adapters.queryMultiAdapter(objects, interface, name)
         if adapter is None:
             raise ComponentLookupError(objects, interface, name)
@@ -257,7 +259,7 @@ class Components(object):
 
     def registerSubscriptionAdapter(self,
                                     factory, required=None, provided=None,
-                                    name=u'', info=u'',
+                                    name=six.u(''), info=six.u(''),
                                     event=True):
         if name:
             raise TypeError("Named subscribers are not yet supported")
@@ -280,7 +282,7 @@ class Components(object):
             yield SubscriptionRegistration(self, *data)
 
     def unregisterSubscriptionAdapter(self, factory=None,
-                          required=None, provided=None, name=u'',
+                          required=None, provided=None, name=six.u(''),
                           ):
         if name:
             raise TypeError("Named subscribers are not yet supported")
@@ -326,7 +328,7 @@ class Components(object):
 
     def registerHandler(self,
                         factory, required=None,
-                        name=u'', info=u'',
+                        name=six.u(''), info=six.u(''),
                         event=True):
         if name:
             raise TypeError("Named handlers are not yet supported")
@@ -345,7 +347,7 @@ class Components(object):
         for data in self._handler_registrations:
             yield HandlerRegistration(self, *data)
 
-    def unregisterHandler(self, factory=None, required=None, name=u''):
+    def unregisterHandler(self, factory=None, required=None, name=six.u('')):
         if name:
             raise TypeError("Named subscribers are not yet supported")
 

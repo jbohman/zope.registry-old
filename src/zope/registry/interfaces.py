@@ -14,6 +14,7 @@
 """Component and Component Architecture Interfaces
 """
 __docformat__ = "reStructuredText"
+import six
 
 from zope.interface import Attribute
 from zope.interface import Interface
@@ -119,7 +120,7 @@ class IComponentArchitecture(Interface):
     # Adapter API
 
     def getAdapter(object,
-                   interface=Interface, name=u'',
+                   interface=Interface, name=six.u(''),
                    context=None):
         """Get a named adapter to an interface for an object
 
@@ -174,7 +175,7 @@ class IComponentArchitecture(Interface):
         named adapter methods with an empty string for a name.
         """
 
-    def queryAdapter(object, interface=Interface, name=u'',
+    def queryAdapter(object, interface=Interface, name=six.u(''),
                      default=None, context=None):
         """Look for a named adapter to an interface for an object
 
@@ -211,7 +212,7 @@ class IComponentArchitecture(Interface):
         """
 
     def queryMultiAdapter(objects,
-                          interface=Interface, name=u'',
+                          interface=Interface, name=six.u(''),
                           default=None,
                           context=None):
         """Look for a multi-adapter to an interface for objects
@@ -318,26 +319,26 @@ class IComponentLookup(Interface):
     utilities = Attribute(
         "Adapter Registry to manage all registered utilities.")
 
-    def queryAdapter(object, interface, name=u'', default=None):
+    def queryAdapter(object, interface, name=six.u(''), default=None):
         """Look for a named adapter to an interface for an object
 
         If a matching adapter cannot be found, returns the default.
         """
 
-    def getAdapter(object, interface, name=u''):
+    def getAdapter(object, interface, name=six.u('')):
         """Look for a named adapter to an interface for an object
 
         If a matching adapter cannot be found, a ComponentLookupError
         is raised.
         """
 
-    def queryMultiAdapter(objects, interface, name=u'', default=None):
+    def queryMultiAdapter(objects, interface, name=six.u(''), default=None):
         """Look for a multi-adapter to an interface for multiple objects
 
         If a matching adapter cannot be found, returns the default.
         """
 
-    def getMultiAdapter(objects, interface, name=u''):
+    def getMultiAdapter(objects, interface, name=six.u('')):
         """Look for a multi-adapter to an interface for multiple objects
 
         If a matching adapter cannot be found, a ComponentLookupError
@@ -395,7 +396,7 @@ class IComponentRegistrationConvenience(Interface):
     activity.
     """
 
-    def provideUtility(component, provides=None, name=u''):
+    def provideUtility(component, provides=None, name=six.u('')):
         """Register a utility globally
 
         A utility is registered to provide an interface with a
@@ -411,7 +412,7 @@ class IComponentRegistrationConvenience(Interface):
 
         """
 
-    def provideAdapter(factory, adapts=None, provides=None, name=u''):
+    def provideAdapter(factory, adapts=None, provides=None, name=six.u('')):
         """Register an adapter globally
 
         An adapter is registered to provide an interface with a name
@@ -586,7 +587,7 @@ class IComponentRegistry(Interface):
     """Register components
     """
 
-    def registerUtility(component=None, provided=None, name=u'', info=u'', factory=None):
+    def registerUtility(component=None, provided=None, name=six.u(''), info=six.u(''), factory=None):
         """Register a utility
 
         factory
@@ -612,7 +613,7 @@ class IComponentRegistry(Interface):
         A Registered event is generated with an IUtilityRegistration.
         """
 
-    def unregisterUtility(component=None, provided=None, name=u'', factory=None):
+    def unregisterUtility(component=None, provided=None, name=six.u(''), factory=None):
         """Unregister a utility
 
         A boolean is returned indicating whether the registry was
@@ -650,8 +651,8 @@ class IComponentRegistry(Interface):
         in the object.
         """
 
-    def registerAdapter(factory, required=None, provided=None, name=u'',
-                       info=u''):
+    def registerAdapter(factory, required=None, provided=None, name=six.u(''),
+                       info=six.u('')):
         """Register an adapter factory
 
         Parameters:
@@ -688,7 +689,7 @@ class IComponentRegistry(Interface):
         """
 
     def unregisterAdapter(factory=None, required=None,
-                          provided=None, name=u''):
+                          provided=None, name=six.u('')):
         """Register an adapter factory
 
         A boolean is returned indicating whether the registry was
@@ -738,7 +739,7 @@ class IComponentRegistry(Interface):
         """
 
     def registerSubscriptionAdapter(factory, required=None, provides=None,
-                                    name=u'', info=''):
+                                    name=six.u(''), info=''):
         """Register a subscriber factory
 
         Parameters:
@@ -779,7 +780,7 @@ class IComponentRegistry(Interface):
         """
 
     def unregisterSubscriptionAdapter(factory=None, required=None,
-                                      provides=None, name=u''):
+                                      provides=None, name=six.u('')):
         """Unregister a subscriber factory.
 
         A boolean is returned indicating whether the registry was
@@ -833,7 +834,7 @@ class IComponentRegistry(Interface):
         registrations in the object.
         """
 
-    def registerHandler(handler, required=None, name=u'', info=''):
+    def registerHandler(handler, required=None, name=six.u(''), info=''):
         """Register a handler.
 
         A handler is a subscriber that doesn't compute an adapter
@@ -871,7 +872,7 @@ class IComponentRegistry(Interface):
         A Registered event is generated with an IHandlerRegistration.
         """
 
-    def unregisterHandler(handler=None, required=None, name=u''):
+    def unregisterHandler(handler=None, required=None, name=six.u('')):
         """Unregister a handler.
 
         A handler is a subscriber that doesn't compute an adapter
