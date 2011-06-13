@@ -16,6 +16,11 @@
 import types
 import sys
 
+if sys.version_info[0] == 3:
+    _class_types = type
+else:
+    _class_types = (type, types.ClassType)
+
 class adapter:
 
     def __init__(self, *interfaces):
@@ -47,8 +52,6 @@ def adapts(*interfaces):
 
 def adaptedBy(ob):
     return getattr(ob, '__component_adapts__', None)
-
-_class_types = type, types.ClassType
 
 class _adapts_descr(object):
     def __init__(self, interfaces):

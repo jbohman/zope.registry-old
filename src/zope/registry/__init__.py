@@ -144,7 +144,7 @@ class Components(object):
         self.utilities.unregister((), provided, name)
 
         subscribed = False
-        for ((p, _), data) in self._utility_registrations.iteritems():
+        for ((p, _), data) in self._utility_registrations.items():
             if p == provided and data[0] == component:
                 subscribed = True
                 break
@@ -443,7 +443,7 @@ class UtilityRegistration(object):
                 self.__class__.__name__,
                 self.registry,
                 getattr(self.provided, '__name__', None), self.name,
-                getattr(self.component, '__name__', `self.component`),
+                getattr(self.component, '__name__', repr(self.component)),
                 self.factory, self.info,
                 )
 
@@ -465,7 +465,7 @@ class AdapterRegistration(object):
             self.registry,
             '[' + ", ".join([r.__name__ for r in self.required]) + ']',
             getattr(self.provided, '__name__', None), self.name,
-            getattr(self.factory, '__name__', `self.factory`), self.info,
+            getattr(self.factory, '__name__', repr(self.factory)), self.info,
             )
 
     def __cmp__(self, other):
@@ -495,7 +495,7 @@ class HandlerRegistration(AdapterRegistration):
             self.registry,
             '[' + ", ".join([r.__name__ for r in self.required]) + ']',
             self.name,
-            getattr(self.factory, '__name__', `self.factory`), self.info,
+            getattr(self.factory, '__name__', repr(self.factory)), self.info,
             )
 
 
