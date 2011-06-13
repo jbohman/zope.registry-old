@@ -13,6 +13,7 @@
 ##############################################################################
 """Basic components support
 """
+import sys
 import types
 import six
 
@@ -47,7 +48,7 @@ class Components(object):
     implements(IComponents)
 
     def __init__(self, name='', bases=()):
-        assert isinstance(name, basestring)
+        assert isinstance(name, six.string_types)
         self.__name__ = name
         self._init_registries()
         self._init_registrations()
@@ -101,7 +102,7 @@ class Components(object):
             self.unregisterUtility(reg[0], provided, name)
 
         subscribed = False
-        for ((p, _), data) in self._utility_registrations.iteritems():
+        for ((p, _), data) in iter(self._utility_registrations.items()):
             if p == provided and data[0] == component:
                 subscribed = True
                 break
@@ -145,7 +146,7 @@ class Components(object):
         self.utilities.unregister((), provided, name)
 
         subscribed = False
-        for ((p, _), data) in self._utility_registrations.items():
+        for ((p, _), data) in iter(self._utility_registrations.items()):
             if p == provided and data[0] == component:
                 subscribed = True
                 break
@@ -161,7 +162,7 @@ class Components(object):
 
     def registeredUtilities(self):
         for ((provided, name), data
-             ) in self._utility_registrations.iteritems():
+             ) in iter(self._utility_registrations.items()):
             yield UtilityRegistration(self, provided, name, *data)
 
     def queryUtility(self, provided, name=six.u(''), default=None):
@@ -225,7 +226,7 @@ class Components(object):
 
     def registeredAdapters(self):
         for ((required, provided, name), (component, info)
-             ) in self._adapter_registrations.iteritems():
+             ) in iter(self._adapter_registrations.items()):
             yield AdapterRegistration(self, required, provided, name,
                                       component, info)
 
@@ -251,7 +252,7 @@ class Components(object):
 
     def getAdapters(self, objects, provided):
         for name, factory in self.adapters.lookupAll(
-            map(providedBy, objects),
+            list(map(providedBy, objects)),
             provided):
             adapter = factory(*objects)
             if adapter is not None:
@@ -402,7 +403,11 @@ def _getAdapterProvided(factory):
         "and no provided interface was specified.")
 
 
-classTypes = type, types.ClassType
+if sys.version_info[0] == 3:
+    classTypes = type
+else:
+    classTypes = (type, types.ClassType)
+
 def _getAdapterRequired(factory, required):
     if required is None:
         try:
