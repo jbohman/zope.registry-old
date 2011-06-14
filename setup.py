@@ -18,7 +18,7 @@
 ##############################################################################
 """Setup for zope.registry package
 """
-
+import sys
 import os
 from setuptools import setup, find_packages
 
@@ -26,6 +26,14 @@ from setuptools import setup, find_packages
 tests_require = [
     'zope.testing',
     ]
+
+if sys.version_info < (3,):
+    extra = {}
+else:
+    extra = dict(
+      use_2to3=True,
+      convert_2to3_doctests=['src/zope/registry/registry.txt', 'src/zope/registry/tests.py'],
+    )
 
 
 def read(*rnames):
@@ -60,7 +68,10 @@ setup(
     install_requires=['setuptools',
                       'zope.interface',
                       'zope.event',
+                      'six',
                       ],
     include_package_data = True,
     zip_safe = False,
+    test_suite='zope.registry.tests.test_suite',
+    **extra
     )
