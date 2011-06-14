@@ -26,20 +26,7 @@ from zope.testing import renormalizing
 from zope.testing.cleanup import cleanUp
 from zope.testrunner.layer import UnitTests
 
-#from zope.component.interfaces import ComponentLookupError
-#from zope.component.interfaces import IComponentArchitecture
-#from zope.component.interfaces import IComponentLookup
-#from zope.component.testing import setUp, tearDown, PlacelessSetup
-#import zope.component.persistentregistry
-#import zope.component.globalregistry
-
-#from zope.configuration.xmlconfig import XMLConfig, xmlconfig
-#from zope.configuration.exceptions import ConfigurationError
-#from zope.security.checker import ProxyFactory
-
 from zope.component.testfiles.adapter import A1, A2, A3
-#from zope.component.testfiles.components import IContent, Content
-#from zope.component.testfiles.components import IApp
 from zope.component.testfiles.views import Request, IC, IV, V1, R1, IR
 
 # side effect gets component-based event dispatcher installed.
@@ -119,18 +106,18 @@ def noop(*args):
 
 @registry.adapter(I1)
 def handle1(x):
-    print 'handle1', x
+    print('handle1', x)
 
 def handle(*objects):
-    print 'handle', objects
+    print('handle', objects)
 
 @registry.adapter(I1)
 def handle3(x):
-    print 'handle3', x
+    print('handle3', x)
 
 @registry.adapter(I1)
 def handle4(x):
-    print 'handle4', x
+    print('handle4', x)
 
 class Ob(object):
     interface.implements(I1)
@@ -230,28 +217,6 @@ def dont_leak_utility_registrations_in__subscribers():
 
     """
 
-#def test_zcml_handler_site_manager():
-    #"""
-    #The ZCML directives provided by zope.component use the ``getSiteManager``
-    #method to get the registry where to register the components. This makes
-    #possible to hook ``getSiteManager`` before loading a ZCML file:
-
-    #>>> from zope.component.registry import Components
-    #>>> registry = Components()
-    #>>> def dummy(context=None):
-    #...     return registry
-    #>>> from zope.component import getSiteManager
-    #>>> ignore = getSiteManager.sethook(dummy)
-
-    #>>> from zope.component.testfiles.components import comp, IApp
-    #>>> from zope.component.zcml import handler
-    #>>> handler('registerUtility', comp, IApp, u'')
-    #>>> registry.getUtility(IApp) is comp
-    #True
-    #>>> ignore = getSiteManager.reset()
-
-    #"""
-
 class Ob3(object):
     interface.implements(IC)
 
@@ -276,11 +241,14 @@ def test_suite():
                     r'exceptions.\1Error:'),
         ])
 
+    from utility_test import Test_utility
+
     return unittest.TestSuite((
-        doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite('registry.txt', checker=checker,
-                             setUp=setUpRegistryTests,
-                             tearDown=tearDownRegistryTests),
+            #doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
+            #doctest.DocFileSuite('registry.txt', checker=checker,
+                             #setUp=setUpRegistryTests,
+                             #tearDown=tearDownRegistryTests),
+            unittest.makeSuite(Test_utility),
         ))
 
 if __name__ == "__main__":
