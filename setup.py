@@ -25,6 +25,7 @@ from setuptools import setup, find_packages
 
 tests_require = [
     'zope.testing',
+    'zope.testrunner'
     ]
 
 if sys.version_info < (3,):
@@ -62,6 +63,7 @@ setup(
         ),
     packages = find_packages('src'),
     package_dir = {'': 'src'},
+    package_data = {'': ['registry.txt']},
 
     namespace_packages=['zope',],
     tests_require = tests_require,

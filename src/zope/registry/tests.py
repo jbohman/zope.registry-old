@@ -26,8 +26,7 @@ from zope.testing import renormalizing
 from zope.testing.cleanup import cleanUp
 from zope.testrunner.layer import UnitTests
 
-from zope.component.testfiles.adapter import A1, A2, A3
-from zope.component.testfiles.views import Request, IC, IV, V1, R1, IR
+class IC(interface.Interface): pass
 
 # side effect gets component-based event dispatcher installed.
 # we should obviously make this more explicit
@@ -103,59 +102,6 @@ class A1_23(U):
 
 def noop(*args):
     pass
-
-@registry.adapter(I1)
-def handle1(x):
-    print('handle1', x)
-
-def handle(*objects):
-    print('handle', objects)
-
-@registry.adapter(I1)
-def handle3(x):
-    print('handle3', x)
-
-@registry.adapter(I1)
-def handle4(x):
-    print('handle4', x)
-
-class Ob(object):
-    interface.implements(I1)
-    def __repr__(self):
-        return '<instance Ob>'
-
-
-ob = Ob()
-
-class Ob2(object):
-    interface.implements(I2)
-    def __repr__(self):
-        return '<instance Ob2>'
-
-class Comp(object):
-    interface.implements(I2)
-    def __init__(self, context):
-        self.context = context
-
-comp = Comp(1)
-
-class Comp2(object):
-    interface.implements(I3)
-    def __init__(self, context):
-        self.context = context
-
-
-#class ConformsToIComponentLookup(object):
-    #"""This object allows the sitemanager to conform/adapt to
-    #`IComponentLookup` and thus to itself."""
-
-    #def __init__(self, sitemanager):
-        #self.sitemanager = sitemanager
-
-    #def __conform__(self, interface):
-        #"""This method is specified by the adapter PEP to do the adaptation."""
-        #if interface is IComponentLookup:
-            #return self.sitemanager
 
 def test_multi_handler_unregistration():
     """
@@ -241,14 +187,11 @@ def test_suite():
                     r'exceptions.\1Error:'),
         ])
 
-    from utility_test import Test_utility
-
     return unittest.TestSuite((
-            #doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
-            #doctest.DocFileSuite('registry.txt', checker=checker,
-                             #setUp=setUpRegistryTests,
-                             #tearDown=tearDownRegistryTests),
-            unittest.makeSuite(Test_utility),
+            doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
+            doctest.DocFileSuite('registry.txt', checker=checker,
+                             setUp=setUpRegistryTests,
+                             tearDown=tearDownRegistryTests),
         ))
 
 if __name__ == "__main__":

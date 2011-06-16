@@ -34,8 +34,6 @@ from zope.registry.interfaces import ISubscriptionAdapterRegistration
 from zope.registry.interfaces import IUtilityRegistration
 from zope.registry.interfaces import Registered
 from zope.registry.interfaces import Unregistered
-#from zope.registry._api import handle
-#from zope.registry._declaration import adapter
 
 from zope.registry._declaration import adaptedBy
 from zope.registry._declaration import adapter
