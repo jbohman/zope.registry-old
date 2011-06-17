@@ -786,8 +786,8 @@ Handlers are used when you want to perform some function in response
 to an event.  Handlers aren't expected to return anything when called
 and are not registered to provide any interface.
 
-    >>> from zope import component
-    >>> @component.adapter(tests.I1)
+    >>> from zope import registry
+    >>> @registry.adapter(tests.I1)
     ... def handle1(x):
     ...     print 'handle1', x
 
@@ -799,7 +799,7 @@ and are not registered to provide any interface.
     >>> components.handle(tests.U1(1))
     handle1 U1(1)
 
-    >>> @component.adapter(tests.I1, tests.I2)
+    >>> @registry.adapter(tests.I1, tests.I2)
     ... def handle12(x, y):
     ...     print 'handle12', x, y
 
@@ -968,14 +968,14 @@ We can use multiple inheritence:
     HandlerRegistration(<Components 2>, [zope.registry.tests.U], u'', 
                         handle, u'')
     
-    >>> @component.adapter(tests.I1)
+    >>> @registry.adapter(tests.I1)
     ... def handle3(x):
     ...     print 'handle3', x
     >>> c3.registerHandler(handle3)
     Registered event:
     HandlerRegistration(<Components 3>, [I1], u'', handle3, u'')
     
-    >>> @component.adapter(tests.I1)
+    >>> @registry.adapter(tests.I1)
     ... def handle4(x):
     ...     print 'handle4', x
     >>> c4.registerHandler(handle4)
