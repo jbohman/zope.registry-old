@@ -20,23 +20,29 @@
 """
 import sys
 import os
-from setuptools import setup, find_packages
+from setuptools import setup
 
-
-tests_require = [
-    'zope.testing',
-    'zope.testrunner',
-    'zope.fixers'
-    ]
-
+extra = {}
 if sys.version_info < (3,):
-    extra = {}
+    extra['install_requires'] = [
+        'setuptools',
+        'zope.interface',
+        'zope.event',
+        ]
 else:
-    extra = dict(
-      use_2to3=True,
-      convert_2to3_doctests=['src/zope/registry/registry.txt', 'src/zope/registry/tests.py'],
-    )
-
+    extra['install_requires'] = [
+        'setuptools',
+        'six',
+        'zope.interface',
+        'zope.event',
+        ]
+    extra['setup_requires'] = ['zope.fixers']
+    extra['use_2to3'] = True
+    extra['convert_2to3_doctests'] = [
+        'src/zope/registry/registry.txt',
+        'src/zope/registry/tests.py',
+        ]
+    extra['use_2to3_fixers'] = ['zope.fixers']
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -62,19 +68,13 @@ setup(
         'Download\n'
         '********\n'
         ),
-    packages = find_packages('src'),
-    package_dir = {'': 'src'},
-    package_data = {'': ['registry.txt']},
-
-    namespace_packages=['zope',],
-    tests_require = tests_require,
-    install_requires=['setuptools',
-                      'zope.interface',
-                      'zope.event',
-                      'six',
-                      ],
-    include_package_data = True,
-    zip_safe = False,
+    packages=['zope', 'zope.registry'],
+    package_dir={'': 'src'},
+    package_data={'': ['registry.txt']},
+    namespace_packages=['zope'],
+    tests_require=[],
+    include_package_data=True,
+    zip_safe=False,
     test_suite='zope.registry.tests.test_suite',
     **extra
     )

@@ -18,19 +18,21 @@ import doctest
 import re
 import unittest
 
+import zope.event
 from zope import interface
 from zope import registry
 from zope.interface.verify import verifyObject
 from zope.interface.interfaces import IInterface
-from zope.testing import renormalizing
-from zope.testing.cleanup import cleanUp
-from zope.testrunner.layer import UnitTests
 
-class IC(interface.Interface): pass
+def dispatch(*event):
+    registry.subscribers(event, None)
 
-# side effect gets component-based event dispatcher installed.
-# we should obviously make this more explicit
-#import zope.component.event
+zope.event.subscribers.append(dispatch)
+
+@registry.adapter(registry.interfaces.IObjectEvent)
+def objectEventNotify(event):
+    """Event subscriber to dispatch ObjectEvents to interested adapters."""
+    zope.registry.subscribers((event.object, event), None)
 
 class I1(interface.Interface):
     pass
@@ -39,6 +41,8 @@ class I2(interface.Interface):
 class I2e(I2):
     pass
 class I3(interface.Interface):
+    pass
+class IC(interface.Interface):
     pass
 
 class ITestType(IInterface):
@@ -167,31 +171,26 @@ class Ob3(object):
     interface.implements(IC)
 
 def setUp(tests):
-    cleanUp()
+    pass
 
 def tearDown(tests):
-    cleanUp()
+    pass
 
 def setUpRegistryTests(tests):
     setUp(tests)
 
 def tearDownRegistryTests(tests):
     tearDown(tests)
-    import zope.event
     zope.event.subscribers.pop()
 
 def test_suite():
-    checker = renormalizing.RENormalizing([
-        (re.compile('at 0x[0-9a-fA-F]+'), 'at <SOME ADDRESS>'),
-        (re.compile(r"<type 'exceptions.(\w+)Error'>:"),
-                    r'exceptions.\1Error:'),
-        ])
-
     return unittest.TestSuite((
             doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
-            doctest.DocFileSuite('registry.txt', checker=checker,
-                             setUp=setUpRegistryTests,
-                             tearDown=tearDownRegistryTests),
+            doctest.DocFileSuite('registry.txt',
+                                 globs={'__name__': '__main__'},
+                                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                                 setUp=setUpRegistryTests,
+                                 tearDown=tearDownRegistryTests),
         ))
 
 if __name__ == "__main__":
