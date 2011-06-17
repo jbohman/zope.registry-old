@@ -25,7 +25,8 @@ from setuptools import setup, find_packages
 
 tests_require = [
     'zope.testing',
-    'zope.testrunner'
+    'zope.testrunner',
+    'zope.fixers'
     ]
 
 if sys.version_info < (3,):
