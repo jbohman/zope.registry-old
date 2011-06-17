@@ -52,7 +52,7 @@ You can also register a utility using a factory instead of a utility instance:
     Unregistered event:
     UtilityRegistration(<Components comps>, I1, u'', 1, None, u'')
     Registered event:
-    UtilityRegistration(<Components comps>, I1, u'', 1, <function factory at <SOME ADDRESS>>, u'')
+    UtilityRegistration(<Components comps>, I1, u'', 1, <function factory at 0x...>, u'')
 
 
 If a component implements other than one interface or no interface,
@@ -124,7 +124,7 @@ Duplicate registrations replace existing ones:
 
     >>> components.registerUtility(tests.U1(4), info=u'use 4 now')
     Unregistered event:
-    UtilityRegistration(<Components comps>, I1, u'', 1, <function factory at <SOME ADDRESS>>, u'')
+    UtilityRegistration(<Components comps>, I1, u'', 1, <function factory at 0x...>, u'')
     Registered event:
     UtilityRegistration(<Components comps>, I1, u'', 4, None, u'use 4 now')
     >>> components.getUtility(tests.I1)
@@ -545,7 +545,7 @@ factory:
     zope.registry.tests.A1_23 
     (<InterfaceClass zope.registry.tests.IA1>,)
     <InterfaceClass zope.registry.tests.IA2> test noop
-    <function noop at 0xb79a1064> 
+    <function noop at 0x...>
 
 
 Subscribers
@@ -664,7 +664,7 @@ We can get registration information for subscriptions:
     zope.registry.tests.A1_2 
     (<InterfaceClass zope.registry.tests.I1>,)
     <InterfaceClass zope.registry.tests.IA2> 
-    <function noop at 0xb796ff7c> 
+    <function noop at 0x...>
 
 We can also unregister subscriptions in much the same way we can for adapters:
 
@@ -696,7 +696,7 @@ We can also unregister subscriptions in much the same way we can for adapters:
     zope.registry.tests.A1_12 
     (<InterfaceClass zope.registry.tests.I1>,)
     <InterfaceClass zope.registry.tests.IA2> 
-    <function noop at 0xb796ff7c> 
+    <function noop at 0x...>
 
     >>> components.unregisterSubscriptionAdapter(
     ...     tests.A, [tests.I1], tests.IA2)
@@ -718,7 +718,7 @@ We can also unregister subscriptions in much the same way we can for adapters:
     zope.registry.tests.A1_12 
     (<InterfaceClass zope.registry.tests.I1>,)
     <InterfaceClass zope.registry.tests.IA2> 
-    <function noop at 0xb796ff7c> 
+    <function noop at 0x...>
 
 Note here that both registrations for A were removed.
 
@@ -849,14 +849,14 @@ We can list the handler registrations:
     ...     print registration.handler, registration.info
     ... # doctest: +NORMALIZE_WHITESPACE
     (<InterfaceClass zope.registry.tests.I1>,)
-    <function handle1 at 0xb78f5bfc> First handler
+    <function handle1 at 0x...> First handler
     (<InterfaceClass zope.registry.tests.I1>,
      <InterfaceClass zope.registry.tests.I2>)
-    <function handle12 at 0xb78f5c34> 
+    <function handle12 at 0x...>
     (<InterfaceClass zope.registry.tests.I1>,)
-    <function handle at 0xb78f5ca4> a comment
+    <function handle at 0x...> a comment
     (<implementedBy zope.registry.tests.U>,)
-    <function handle at 0xb78f5ca4> handle a class
+    <function handle at 0x...> handle a class
 
 and we can unregister handlers:
 
@@ -872,12 +872,12 @@ and we can unregister handlers:
     ...     print registration.handler, registration.info
     ... # doctest: +NORMALIZE_WHITESPACE
     (<InterfaceClass zope.registry.tests.I1>,)
-    <function handle1 at 0xb78f5bfc> First handler
+    <function handle1 at 0x...> First handler
     (<InterfaceClass zope.registry.tests.I1>,
      <InterfaceClass zope.registry.tests.I2>)
-    <function handle12 at 0xb78f5c34> 
+    <function handle12 at 0x...>
     (<InterfaceClass zope.registry.tests.I1>,)
-    <function handle at 0xb78f5ca4> a comment
+    <function handle at 0x...> a comment
 
     >>> components.unregisterHandler(handle12)
     Unregistered event:
@@ -888,9 +888,9 @@ and we can unregister handlers:
     ...     print registration.required
     ...     print registration.handler, registration.info
     (<InterfaceClass zope.registry.tests.I1>,)
-    <function handle1 at 0xb78f5bfc> First handler
+    <function handle1 at 0x...> First handler
     (<InterfaceClass zope.registry.tests.I1>,)
-    <function handle at 0xb78f5ca4> a comment
+    <function handle at 0x...> a comment
 
     >>> components.unregisterHandler(handle12)
     False

@@ -18,21 +18,10 @@ import doctest
 import re
 import unittest
 
-import zope.event
 from zope import interface
 from zope import registry
 from zope.interface.verify import verifyObject
 from zope.interface.interfaces import IInterface
-
-def dispatch(*event):
-    registry.subscribers(event, None)
-
-zope.event.subscribers.append(dispatch)
-
-@registry.adapter(registry.interfaces.IObjectEvent)
-def objectEventNotify(event):
-    """Event subscriber to dispatch ObjectEvents to interested adapters."""
-    zope.registry.subscribers((event.object, event), None)
 
 class I1(interface.Interface):
     pass
@@ -181,6 +170,7 @@ def setUpRegistryTests(tests):
 
 def tearDownRegistryTests(tests):
     tearDown(tests)
+    import zope.event
     zope.event.subscribers.pop()
 
 def test_suite():
