@@ -11,8 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Adapter declarations
-"""
+"""Adapter declarations"""
 import types
 import sys
 

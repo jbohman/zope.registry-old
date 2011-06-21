@@ -23,25 +23,9 @@ import os
 from setuptools import setup
 
 extra = {}
-if sys.version_info < (3,):
-    extra['install_requires'] = [
-        'setuptools',
-        'zope.interface',
-        'zope.event',
-        ]
-else:
-    extra['install_requires'] = [
-        'setuptools',
-        'six',
-        'zope.interface',
-        'zope.event',
-        ]
+if sys.version_info >= (3,):
     extra['setup_requires'] = ['zope.fixers']
     extra['use_2to3'] = True
-    extra['convert_2to3_doctests'] = [
-        'src/zope/registry/registry.txt',
-        'src/zope/registry/tests.py',
-        ]
     extra['use_2to3_fixers'] = ['zope.fixers']
 
 def read(*rnames):
@@ -61,20 +45,21 @@ setup(
         'Detailed Documentation\n'
         '**********************\n'
         + '\n' +
-        read('src', 'zope', 'registry', 'registry.txt')
+        read('REGISTRY.txt')
         + '\n' +
         read('CHANGES.txt')
         + '\n' +
         'Download\n'
         '********\n'
         ),
-    packages=['zope', 'zope.registry'],
+    packages=['zope', 'zope.registry', 'zope.registry.tests'],
     package_dir={'': 'src'},
     package_data={'': ['registry.txt']},
-    namespace_packages=['zope'],
-    tests_require=[],
     include_package_data=True,
-    zip_safe=False,
+    namespace_packages=['zope'],
+    install_requires=['setuptools', 'zope.interface', 'zope.event'],
+    tests_require=['setuptools', 'zope.interface', 'zope.event'],
     test_suite='zope.registry.tests.test_suite',
+    zip_safe=False,
     **extra
     )

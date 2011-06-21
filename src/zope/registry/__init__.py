@@ -15,7 +15,8 @@
 """
 import sys
 import types
-import six
+
+from zope.event import notify
 
 from zope.interface import Interface
 from zope.interface import implementedBy
@@ -39,14 +40,23 @@ from zope.registry._declaration import adaptedBy
 from zope.registry._declaration import adapter
 from zope.registry._declaration import adapts
 
-from zope.event import notify
+if sys.version_info[0] == 3:
+    def _u(s):
+        return s
+    class_types = type
+    string_types = (str,)
+else:
+    def _u(s):
+        return unicode(s, 'unicode_escape')
+    class_types = (type, types.ClassType)
+    string_types = (basestring,)
 
 class Components(object):
 
     implements(IComponents)
 
     def __init__(self, name='', bases=()):
-        assert isinstance(name, six.string_types)
+        assert isinstance(name, string_types)
         self.__name__ = name
         self._init_registries()
         self._init_registrations()
@@ -82,8 +92,8 @@ class Components(object):
         lambda self, bases: self._setBases(bases),
         )
 
-    def registerUtility(self, component=None, provided=None, name=six.u(''), 
-                        info=six.u(''), event=True, factory=None):
+    def registerUtility(self, component=None, provided=None, name=_u(''), 
+                        info=_u(''), event=True, factory=None):
         if factory:
             if component:
                 raise TypeError("Can't specify factory and component.")
@@ -117,7 +127,7 @@ class Components(object):
                                     factory)
                 ))
 
-    def unregisterUtility(self, component=None, provided=None, name=six.u(''),
+    def unregisterUtility(self, component=None, provided=None, name=_u(''),
                           factory=None):
         if factory:
             if component:
@@ -163,10 +173,10 @@ class Components(object):
              ) in iter(self._utility_registrations.items()):
             yield UtilityRegistration(self, provided, name, *data)
 
-    def queryUtility(self, provided, name=six.u(''), default=None):
+    def queryUtility(self, provided, name=_u(''), default=None):
         return self.utilities.lookup((), provided, name, default)
 
-    def getUtility(self, provided, name=six.u('')):
+    def getUtility(self, provided, name=_u('')):
         utility = self.utilities.lookup((), provided, name)
         if utility is None:
             raise ComponentLookupError(provided, name)
@@ -180,7 +190,7 @@ class Components(object):
         return self.utilities.subscriptions((), interface)
 
     def registerAdapter(self, factory, required=None, provided=None, 
-                        name=six.u(''), info=six.u(''), event=True):
+                        name=_u(''), info=_u(''), event=True):
         if provided is None:
             provided = _getAdapterProvided(factory)
         required = _getAdapterRequired(factory, required)
@@ -196,7 +206,7 @@ class Components(object):
 
 
     def unregisterAdapter(self, factory=None,
-                          required=None, provided=None, name=six.u(''),
+                          required=None, provided=None, name=_u(''),
                           ):
         if provided is None:
             if factory is None:
@@ -228,21 +238,21 @@ class Components(object):
             yield AdapterRegistration(self, required, provided, name,
                                       component, info)
 
-    def queryAdapter(self, object, interface, name=six.u(''), default=None):
+    def queryAdapter(self, object, interface, name=_u(''), default=None):
         return self.adapters.queryAdapter(object, interface, name, default)
 
-    def getAdapter(self, object, interface, name=six.u('')):
+    def getAdapter(self, object, interface, name=_u('')):
         adapter = self.adapters.queryAdapter(object, interface, name)
         if adapter is None:
             raise ComponentLookupError(object, interface, name)
         return adapter
 
-    def queryMultiAdapter(self, objects, interface, name=six.u(''), 
+    def queryMultiAdapter(self, objects, interface, name=_u(''), 
                           default=None):
         return self.adapters.queryMultiAdapter(
             objects, interface, name, default)
 
-    def getMultiAdapter(self, objects, interface, name=six.u('')):
+    def getMultiAdapter(self, objects, interface, name=_u('')):
         adapter = self.adapters.queryMultiAdapter(objects, interface, name)
         if adapter is None:
             raise ComponentLookupError(objects, interface, name)
@@ -258,7 +268,7 @@ class Components(object):
 
     def registerSubscriptionAdapter(self,
                                     factory, required=None, provided=None,
-                                    name=six.u(''), info=six.u(''),
+                                    name=_u(''), info=_u(''),
                                     event=True):
         if name:
             raise TypeError("Named subscribers are not yet supported")
@@ -281,7 +291,7 @@ class Components(object):
             yield SubscriptionRegistration(self, *data)
 
     def unregisterSubscriptionAdapter(self, factory=None,
-                          required=None, provided=None, name=six.u(''),
+                          required=None, provided=None, name=_u(''),
                           ):
         if name:
             raise TypeError("Named subscribers are not yet supported")
@@ -327,7 +337,7 @@ class Components(object):
 
     def registerHandler(self,
                         factory, required=None,
-                        name=six.u(''), info=six.u(''),
+                        name=_u(''), info=_u(''),
                         event=True):
         if name:
             raise TypeError("Named handlers are not yet supported")
@@ -346,7 +356,7 @@ class Components(object):
         for data in self._handler_registrations:
             yield HandlerRegistration(self, *data)
 
-    def unregisterHandler(self, factory=None, required=None, name=six.u('')):
+    def unregisterHandler(self, factory=None, required=None, name=_u('')):
         if name:
             raise TypeError("Named subscribers are not yet supported")
 
@@ -400,12 +410,6 @@ def _getAdapterProvided(factory):
         "The adapter factory doesn't implement a single interface "
         "and no provided interface was specified.")
 
-
-if sys.version_info[0] == 3:
-    classTypes = type
-else:
-    classTypes = (type, types.ClassType)
-
 def _getAdapterRequired(factory, required):
     if required is None:
         try:
@@ -424,7 +428,7 @@ def _getAdapterRequired(factory, required):
         if r is None:
             r = Interface
         elif not ISpecification.providedBy(r):
-            if isinstance(r, classTypes):
+            if isinstance(r, class_types):
                 r = implementedBy(r)
             else:
                 raise TypeError("Required specification must be a "
@@ -504,18 +508,18 @@ class HandlerRegistration(AdapterRegistration):
             )
 
 
-#@adapter(IUtilityRegistration, IRegistrationEvent)
-#def dispatchUtilityRegistrationEvent(registration, event):
-    #handle(registration.component, event)
+@adapter(IUtilityRegistration, IRegistrationEvent)
+def dispatchUtilityRegistrationEvent(registration, event):
+    handle(registration.component, event)
 
-#@adapter(IAdapterRegistration, IRegistrationEvent)
-#def dispatchAdapterRegistrationEvent(registration, event):
-    #handle(registration.factory, event)
+@adapter(IAdapterRegistration, IRegistrationEvent)
+def dispatchAdapterRegistrationEvent(registration, event):
+    handle(registration.factory, event)
 
-#@adapter(ISubscriptionAdapterRegistration, IRegistrationEvent)
-#def dispatchSubscriptionAdapterRegistrationEvent(registration, event):
-    #handle(registration.factory, event)
+@adapter(ISubscriptionAdapterRegistration, IRegistrationEvent)
+def dispatchSubscriptionAdapterRegistrationEvent(registration, event):
+    handle(registration.factory, event)
 
-#@adapter(IHandlerRegistration, IRegistrationEvent)
-#def dispatchHandlerRegistrationEvent(registration, event):
-    #handle(registration.handler, event)
+@adapter(IHandlerRegistration, IRegistrationEvent)
+def dispatchHandlerRegistrationEvent(registration, event):
+    handle(registration.handler, event)
