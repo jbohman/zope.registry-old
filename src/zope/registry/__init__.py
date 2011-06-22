@@ -456,8 +456,26 @@ class UtilityRegistration(object):
                 self.factory, self.info,
                 )
 
-    def __cmp__(self, other):
-        return cmp(self.__repr__(), other.__repr__())
+    def __hash__(self):
+        return id(self)
+
+    def __eq__(self, other):
+        return repr(self) == repr(other)
+
+    def __ne__(self, other):
+        return repr(self) != repr(other)
+
+    def __lt__(self, other):
+        return repr(self) < repr(other)
+
+    def __le__(self, other):
+        return repr(self) <= repr(other)
+
+    def __gt__(self, other):
+        return repr(self) > repr(other)
+
+    def __ge__(self, other):
+        return repr(self) >= repr(other)
 
 class AdapterRegistration(object):
 
@@ -477,8 +495,26 @@ class AdapterRegistration(object):
             getattr(self.factory, '__name__', repr(self.factory)), self.info,
             )
 
-    def __cmp__(self, other):
-        return cmp(self.__repr__(), other.__repr__())
+    def __hash__(self):
+        return id(self)
+
+    def __eq__(self, other):
+        return repr(self) == repr(other)
+
+    def __ne__(self, other):
+        return repr(self) != repr(other)
+
+    def __lt__(self, other):
+        return repr(self) < repr(other)
+
+    def __le__(self, other):
+        return repr(self) <= repr(other)
+
+    def __gt__(self, other):
+        return repr(self) > repr(other)
+
+    def __ge__(self, other):
+        return repr(self) >= repr(other)
 
 class SubscriptionRegistration(AdapterRegistration):
 
