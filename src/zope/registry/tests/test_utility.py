@@ -127,9 +127,11 @@ class Test(unittest.TestCase):
         self.assertEqual(sorted_utilities[0], (u'', test_object2))
         self.assertEqual(sorted_utilities[1], (u'name', test_object3))
 
-        sorted_all_utilities = sorted(self.components.getAllUtilitiesRegisteredFor(self.tests.I2))
-        self.assertEqual(len(sorted_all_utilities), 3)
-        self.assertEqual(sorted_all_utilities, [test_object2, test_object3, test_object4])
+        all_utilities = self.components.getAllUtilitiesRegisteredFor(self.tests.I2)
+        self.assertEqual(len(all_utilities), 3)
+        self.assertTrue(test_object2 in all_utilities)
+        self.assertTrue(test_object3 in all_utilities)
+        self.assertTrue(test_object4 in all_utilities)
 
         self.assertTrue(self.components.unregisterUtility(test_object4, self.tests.I2e))
         self.assertEqual(self.components.getAllUtilitiesRegisteredFor(self.tests.I2e), [])
