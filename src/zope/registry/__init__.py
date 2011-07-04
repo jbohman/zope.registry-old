@@ -543,19 +543,3 @@ class HandlerRegistration(AdapterRegistration):
             getattr(self.factory, '__name__', repr(self.factory)), self.info,
             )
 
-
-@adapter(IUtilityRegistration, IRegistrationEvent)
-def dispatchUtilityRegistrationEvent(registration, event):
-    handle(registration.component, event)
-
-@adapter(IAdapterRegistration, IRegistrationEvent)
-def dispatchAdapterRegistrationEvent(registration, event):
-    handle(registration.factory, event)
-
-@adapter(ISubscriptionAdapterRegistration, IRegistrationEvent)
-def dispatchSubscriptionAdapterRegistrationEvent(registration, event):
-    handle(registration.factory, event)
-
-@adapter(IHandlerRegistration, IRegistrationEvent)
-def dispatchHandlerRegistrationEvent(registration, event):
-    handle(registration.handler, event)
