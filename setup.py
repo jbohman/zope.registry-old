@@ -55,8 +55,8 @@ setup(
     packages=['zope', 'zope.registry', 'zope.registry.tests'],
     package_dir={'': 'src'},
     namespace_packages=['zope'],
-    install_requires=['setuptools', 'zope.interface==3.6.2', 'zope.event'],
-    tests_require=['setuptools', 'zope.interface==3.6.2', 'zope.event'],
+    install_requires=['setuptools', 'zope.interface', 'zope.event'],
+    tests_require=['setuptools', 'zope.interface', 'zope.event'],
     test_suite='zope.registry.tests',
     zip_safe=False,
     **extra
